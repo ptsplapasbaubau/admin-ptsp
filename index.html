@@ -3,811 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Pendaftaran - GitHub Pages</title>
+    <title>Pendaftaran - GitHub + GAS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --border-radius: 12px;
-            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-            min-height: 90vh;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.2;
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            position: relative;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 15px;
-        }
-        
-        .api-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        
-        .api-status.online {
-            color: #4ade80;
-        }
-        
-        .content {
-            padding: 35px;
-        }
-        
-        .control-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 25px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-        }
-        
-        .btn:active {
-            transform: translateY(-1px);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-        }
-        
-        .data-info {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--gray);
-            background: white;
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        .filter-section {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .filter-select {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            font-weight: 500;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            min-width: 180px;
-        }
-        
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-        
-        .data-container {
-            overflow-x: auto;
-            border-radius: var(--border-radius);
-            border: 1px solid rgba(0,0,0,0.08);
-            background: white;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            min-width: 900px;
-        }
-        
-        thead {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-        
-        th {
-            padding: 20px 18px;
-            text-align: left;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            position: relative;
-        }
-        
-        th:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background: rgba(255,255,255,0.2);
-        }
-        
-        tbody tr {
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-        }
-        
-        tbody tr:hover {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.03), rgba(114, 9, 183, 0.03));
-            transform: translateX(5px);
-        }
-        
-        td {
-            padding: 20px 18px;
-            color: #444;
-        }
-        
-        .status {
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .status-menunggu {
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            color: #c62828;
-            border: 1px solid rgba(198, 40, 40, 0.2);
-        }
-        
-        .status-proses {
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-            color: #ef6c00;
-            border: 1px solid rgba(239, 108, 0, 0.2);
-        }
-        
-        .status-diterima {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-            color: #2e7d32;
-            border: 1px solid rgba(46, 125, 50, 0.2);
-        }
-        
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .action-btn.update {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
-        }
-        
-        .action-btn.update:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(67, 97, 238, 0.4);
-        }
-        
-        .action-btn.reset {
-            background: linear-gradient(135deg, #f1f1f1, #e0e0e0);
-            color: var(--gray);
-        }
-        
-        .action-btn.reset:hover {
-            background: linear-gradient(135deg, #e0e0e0, #d0d0d0);
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px 30px;
-            font-size: 1.2rem;
-            color: var(--gray);
-        }
-        
-        .loading i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary);
-            animation: spin 1.5s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #d32f2f;
-            background: linear-gradient(135deg, #ffebee, #ffcdd2);
-            border-radius: var(--border-radius);
-            margin: 20px 0;
-            border: 1px solid rgba(211, 47, 47, 0.2);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            color: var(--gray);
-            font-size: 0.95rem;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: var(--border-radius);
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease;
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: var(--gray);
-            transition: color 0.3s ease;
-        }
-        
-        .modal-close:hover {
-            color: var(--primary);
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: var(--dark);
-            font-size: 1.1rem;
-        }
-        
-        .form-group select {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-        
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .btn-cancel {
-            background: linear-gradient(135deg, #f1f1f1, #e0e0e0);
-            color: var(--gray);
-        }
-        
-        .btn-cancel:hover {
-            background: linear-gradient(135deg, #e0e0e0, #d0d0d0);
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 0;
-            }
-            
-            header {
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .control-panel {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .filter-section {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            th, td {
-                padding: 15px 12px;
-            }
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            z-index: 1001;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: slideInRight 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .notification.success {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-        }
-        
-        .notification.error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
+        /* CSS styling sebelumnya tetap sama */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f7fb; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        header { background: linear-gradient(135deg, #4361ee, #7209b7); color: white; padding: 30px; text-align: center; }
+        h1 { font-size: 2rem; margin-bottom: 10px; }
+        .content { padding: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn-primary { background: #4361ee; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; }
+        .status { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; }
+        .menunggu { background: #ffebee; color: #d32f2f; }
+        .proses { background: #fff3e0; color: #f57c00; }
+        .diterima { background: #e8f5e9; color: #388e3c; }
+        .loading { text-align: center; padding: 40px; }
+        .error { background: #ffebee; color: #d32f2f; padding: 20px; border-radius: 5px; margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-users"></i> Aplikasi Manajemen Pendaftaran</h1>
-            <p class="subtitle">Aplikasi berbasis web untuk mengelola data pendaftaran dari Google Sheets</p>
-            <div class="api-status" id="apiStatus">
-                <i class="fas fa-circle"></i>
-                <span>Menguji koneksi API...</span>
+            <h1><i class="fas fa-users"></i> Aplikasi Pendaftaran</h1>
+            <p>GitHub Pages + Google Apps Script</p>
+            <div id="apiStatus" style="margin-top: 10px; font-size: 0.9rem;">
+                <i class="fas fa-circle" style="color: #ccc;"></i> <span>Testing connection...</span>
             </div>
         </header>
         
         <div class="content">
-            <div class="control-panel">
-                <div>
-                    <button class="btn btn-primary" id="loadData">
-                        <i class="fas fa-sync-alt"></i> Muat Data
-                    </button>
-                    <span class="data-info" id="dataInfo">Klik "Muat Data" untuk memulai</span>
-                </div>
-                
-                <div class="filter-section">
-                    <select class="filter-select" id="filterStatus">
-                        <option value="all">Semua Status</option>
-                        <option value="menunggu">Menunggu</option>
-                        <option value="proses">Proses</option>
-                        <option value="diterima">Diterima</option>
-                    </select>
-                    
-                    <button class="btn btn-success" id="saveChanges">
-                        <i class="fas fa-save"></i> Simpan Perubahan
-                    </button>
-                </div>
+            <div>
+                <button class="btn btn-primary" onclick="loadData()">
+                    <i class="fas fa-sync"></i> Muat Data
+                </button>
+                <span id="dataInfo">Klik untuk memuat data</span>
             </div>
             
             <div id="loading" class="loading" style="display: none;">
-                <i class="fas fa-spinner"></i>
-                <p>Memuat data dari Google Sheets...</p>
+                <i class="fas fa-spinner fa-spin"></i> Memuat data...
             </div>
             
-            <div id="errorContainer" class="error" style="display: none;">
-                <h3><i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan</h3>
-                <p id="errorMessage"></p>
-                <button class="btn btn-primary" onclick="loadData()" style="margin-top: 20px;">
-                    <i class="fas fa-redo"></i> Coba Lagi
-                </button>
-            </div>
+            <div id="error" class="error" style="display: none;"></div>
             
-            <div class="data-container">
-                <table id="dataTable">
+            <div id="dataContainer">
+                <table>
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>ID Pendaftaran</th>
-                            <th>Nama Lengkap</th>
-                            <th>Email</th>
-                            <th>Tanggal Daftar</th>
-                            <th>Program</th>
-                            <th>Status</th>
+                            <th>Kolom A</th>
+                            <th>Kolom B</th>
+                            <th>Kolom C</th>
+                            <th>Kolom J</th>
+                            <th>Kolom K</th>
+                            <th>Status (L)</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        <!-- Data akan dimuat disini -->
+                        <!-- Data akan diisi di sini -->
                     </tbody>
                 </table>
             </div>
         </div>
-        
-        <footer>
-            <p><strong>GitHub Pages + Google Apps Script Integration</strong></p>
-            <p>Spreadsheet ID: <code>1ih0-dvFdsz41HGZTfXuPLqCetgiNU1MtSaYjhRDiR5s</code> | Sheet: pendaftaran</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">
-                <i class="fas fa-code"></i> Frontend: GitHub Pages | 
-                <i class="fas fa-server"></i> Backend: Google Apps Script
-            </p>
-        </footer>
     </div>
-    
-    <!-- Modal Update Status -->
-    <div class="modal" id="updateModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-edit"></i> Update Status</h3>
-                <button class="modal-close" id="closeModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="modalStatus">Ubah Status Menjadi:</label>
-                    <select id="modalStatus" class="form-select">
-                        <option value="menunggu">Menunggu</option>
-                        <option value="proses">Proses</option>
-                        <option value="diterima">Diterima</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-cancel" id="cancelUpdate">Batal</button>
-                    <button class="btn btn-primary" id="confirmUpdate">Update Status</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="notificationContainer"></div>
 
     <script>
-        // ==================== KONFIGURASI ====================
-        // GANTI URL_INI dengan URL GAS Anda setelah deploy
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwUcKv1T4QytZzNfNLiWw2335XtSXjpjxWOStjXWT5GxLj4P4UHHjgKF-rfVCeuk3SawQ/exec';
+        // ====== KONFIGURASI ======
+        // GANTI DENGAN URL GAS ANDA SETELAH DEPLOY
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwUcKv1T4QytZzNfNLiWw2335XtSXjpjxWOStjXWT5GxLj4P4UHHjgKF-rfVCeuk3SawQ/exec';
         
-        // Data dan state management
-        let pendaftaranData = [];
-        let filteredData = [];
-        let currentRow = null;
-        let pendingUpdates = new Map(); // Untuk menyimpan perubahan sebelum disimpan
-        
-        // Status mapping
-        const STATUS_MAP = {
-            'menunggu': { text: 'MENUNGGU', class: 'status-menunggu', icon: 'fas fa-clock' },
-            'proses': { text: 'PROSES', class: 'status-proses', icon: 'fas fa-cogs' },
-            'diterima': { text: 'DITERIMA', class: 'status-diterima', icon: 'fas fa-check-circle' }
-        };
-        
-        // ==================== DOM ELEMENTS ====================
-        const elements = {
-            loadDataBtn: document.getElementById('loadData'),
-            saveChangesBtn: document.getElementById('saveChanges'),
-            filterStatus: document.getElementById('filterStatus'),
-            loadingElement: document.getElementById('loading'),
-            errorContainer: document.getElementById('errorContainer'),
-            errorMessage: document.getElementById('errorMessage'),
-            tableBody: document.getElementById('tableBody'),
-            dataInfo: document.getElementById('dataInfo'),
-            updateModal: document.getElementById('updateModal'),
-            closeModal: document.getElementById('closeModal'),
-            cancelUpdate: document.getElementById('cancelUpdate'),
-            confirmUpdate: document.getElementById('confirmUpdate'),
-            modalStatus: document.getElementById('modalStatus'),
-            apiStatus: document.getElementById('apiStatus')
-        };
-        
-        // ==================== UTILITY FUNCTIONS ====================
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
-            container.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideInRight 0.3s ease reverse';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-        
-        function showLoading() {
-            elements.loadingElement.style.display = 'block';
-            elements.errorContainer.style.display = 'none';
-            elements.tableBody.innerHTML = '';
-        }
-        
-        function hideLoading() {
-            elements.loadingElement.style.display = 'none';
-        }
-        
-        function showError(message) {
-            elements.errorMessage.textContent = message;
-            elements.errorContainer.style.display = 'block';
-            hideLoading();
-        }
-        
-        function updateDataInfo() {
-            const total = pendaftaranData.length;
-            const menunggu = pendaftaranData.filter(d => d.colL === 'menunggu').length;
-            const proses = pendaftaranData.filter(d => d.colL === 'proses').length;
-            const diterima = pendaftaranData.filter(d => d.colL === 'diterima').length;
-            
-            elements.dataInfo.innerHTML = `
-                Total: <strong>${total}</strong> data | 
-                Menunggu: <span class="status-menunggu" style="padding: 2px 8px;">${menunggu}</span> | 
-                Proses: <span class="status-proses" style="padding: 2px 8px;">${proses}</span> | 
-                Diterima: <span class="status-diterima" style="padding: 2px 8px;">${diterima}</span>
-            `;
-        }
-        
-        // ==================== API FUNCTIONS ====================
-        async function testAPI() {
+        // ====== FUNGSI UTAMA ======
+        async function testConnection() {
             try {
-                const response = await fetch(GAS_API_URL, { 
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
+                const response = await fetch(GAS_URL, { method: 'GET' });
                 if (response.ok) {
-                    elements.apiStatus.innerHTML = '<i class="fas fa-circle online"></i> <span>API Terhubung</span>';
-                } else {
-                    elements.apiStatus.innerHTML = '<i class="fas fa-circle"></i> <span>API Error</span>';
+                    document.getElementById('apiStatus').innerHTML = 
+                        '<i class="fas fa-circle" style="color: #4CAF50;"></i> <span>API Connected</span>';
                 }
             } catch (error) {
-                elements.apiStatus.innerHTML = '<i class="fas fa-circle"></i> <span>API Tidak Terhubung</span>';
+                document.getElementById('apiStatus').innerHTML = 
+                    '<i class="fas fa-circle" style="color: #f44336;"></i> <span>API Error</span>';
             }
         }
         
-        async function fetchData() {
+        async function loadData() {
             showLoading();
+            hideError();
             
             try {
-                const response = await fetch(GAS_API_URL, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                
+                const response = await fetch(GAS_URL);
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    pendaftaranData = result.data;
-                    applyFilter();
-                    updateDataInfo();
-                    showNotification('Data berhasil dimuat', 'success');
+                    renderData(result.data);
+                    document.getElementById('dataInfo').textContent = 
+                        `Total data: ${result.total}`;
                 } else {
-                    throw new Error(result.error || 'Gagal memuat data');
+                    showError(result.error || 'Gagal memuat data');
                 }
                 
             } catch (error) {
-                showError(`Gagal mengambil data: ${error.message}`);
-                showNotification('Gagal memuat data', 'error');
+                showError(`Error: ${error.message}`);
             } finally {
                 hideLoading();
             }
         }
         
-        async function updateStatusAPI(rowNumber, newStatus) {
+        async function updateStatus(rowNumber, newStatus) {
             try {
-                const response = await fetch(GAS_API_URL, {
+                const response = await fetch(GAS_URL, {
                     method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        rowNumber: rowNumber,
-                        newStatus: newStatus
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ row: rowNumber, status: newStatus })
                 });
                 
                 const result = await response.json();
-                return result;
+                
+                if (result.success) {
+                    alert(result.message);
+                    loadData(); // Reload data
+                } else {
+                    alert(`Error: ${result.error}`);
+                }
                 
             } catch (error) {
-                return {
-                    success: false,
-                    error: error.message
-                };
+                alert(`Update failed: ${error.message}`);
             }
         }
         
-        // ==================== DATA RENDERING ====================
-        function renderTable(data) {
-            elements.tableBody.innerHTML = '';
+        // ====== FUNGSI BANTUAN ======
+        function renderData(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
             
-            if (data.length === 0) {
-                elements.tableBody.innerHTML = `
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 60px 20px; color: var(--gray);">
-                            <i class="fas fa-database" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <h3 style="margin-bottom: 10px;">Tidak Ada Data</h3>
-                            <p>Data pendaftaran tidak ditemukan atau filter tidak cocok</p>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            Tidak ada data
                         </td>
                     </tr>
                 `;
@@ -815,211 +157,59 @@
             }
             
             data.forEach((item, index) => {
-                const status = STATUS_MAP[item.colL] || STATUS_MAP.menunggu;
-                const hasPendingUpdate = pendingUpdates.has(item.rowNumber);
-                
                 const row = document.createElement('tr');
+                const statusClass = item.colL || 'menunggu';
+                
                 row.innerHTML = `
-                    <td><strong>${index + 1}</strong></td>
-                    <td>${item.colA || 'N/A'}</td>
-                    <td><strong>${item.colB || 'N/A'}</strong></td>
-                    <td>${item.colC || 'N/A'}</td>
-                    <td>${formatDate(item.colJ) || 'N/A'}</td>
-                    <td>${item.colK || 'N/A'}</td>
+                    <td>${index + 1}</td>
+                    <td>${item.colA || '-'}</td>
+                    <td>${item.colB || '-'}</td>
+                    <td>${item.colC || '-'}</td>
+                    <td>${item.colJ || '-'}</td>
+                    <td>${item.colK || '-'}</td>
                     <td>
-                        <span class="status ${status.class} ${hasPendingUpdate ? 'pending-update' : ''}">
-                            <i class="${status.icon}"></i> ${status.text}
-                            ${hasPendingUpdate ? ' (Perubahan)' : ''}
-                        </span>
+                        <span class="status ${statusClass}">${statusClass.toUpperCase()}</span>
                     </td>
                     <td>
-                        <div class="actions">
-                            <button class="action-btn update" onclick="openUpdateModal(${index})">
-                                <i class="fas fa-edit"></i> Ubah
-                            </button>
-                            ${hasPendingUpdate ? `
-                            <button class="action-btn reset" onclick="revertUpdate(${item.rowNumber})">
-                                <i class="fas fa-undo"></i> Reset
-                            </button>
-                            ` : ''}
-                        </div>
+                        <button onclick="changeStatus(${item.rowNumber})" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Ubah
+                        </button>
                     </td>
                 `;
-                
-                elements.tableBody.appendChild(row);
+                tbody.appendChild(row);
             });
         }
         
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('id-ID', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                });
-            } catch {
-                return dateString;
+        function changeStatus(rowNumber) {
+            const newStatus = prompt('Masukkan status baru (menunggu/proses/diterima):');
+            if (newStatus && ['menunggu', 'proses', 'diterima'].includes(newStatus.toLowerCase())) {
+                updateStatus(rowNumber, newStatus.toLowerCase());
+            } else if (newStatus) {
+                alert('Status tidak valid. Gunakan: menunggu, proses, atau diterima');
             }
         }
         
-        // ==================== DATA FILTERING ====================
-        function applyFilter() {
-            const selectedStatus = elements.filterStatus.value;
-            
-            if (selectedStatus === 'all') {
-                filteredData = [...pendaftaranData];
-            } else {
-                filteredData = pendaftaranData.filter(item => item.colL === selectedStatus);
-            }
-            
-            renderTable(filteredData);
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
         }
         
-        // ==================== UPDATE FUNCTIONS ====================
-        function openUpdateModal(rowIndex) {
-            currentRow = filteredData[rowIndex];
-            elements.modalStatus.value = currentRow.colL;
-            elements.updateModal.style.display = 'flex';
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
         }
         
-        function closeUpdateModal() {
-            elements.updateModal.style.display = 'none';
-            currentRow = null;
+        function showError(message) {
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').textContent = message;
         }
         
-        async function updateStatus() {
-            if (!currentRow) return;
-            
-            const newStatus = elements.modalStatus.value;
-            
-            if (newStatus === currentRow.colL) {
-                showNotification('Status tidak berubah', 'error');
-                closeUpdateModal();
-                return;
-            }
-            
-            // Simpan perubahan lokal
-            pendingUpdates.set(currentRow.rowNumber, {
-                oldStatus: currentRow.colL,
-                newStatus: newStatus,
-                data: currentRow
-            });
-            
-            // Update data lokal untuk preview
-            currentRow.colL = newStatus;
-            
-            // Re-render table
-            applyFilter();
-            updateDataInfo();
-            
-            showNotification(`Status baris ${currentRow.rowNumber} diubah menjadi ${newStatus}`, 'success');
-            closeUpdateModal();
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
         }
         
-        function revertUpdate(rowNumber) {
-            const update = pendingUpdates.get(rowNumber);
-            if (!update) return;
-            
-            // Kembalikan ke status lama
-            const dataItem = pendaftaranData.find(item => item.rowNumber === rowNumber);
-            if (dataItem) {
-                dataItem.colL = update.oldStatus;
-            }
-            
-            // Hapus dari pending updates
-            pendingUpdates.delete(rowNumber);
-            
-            // Re-render
-            applyFilter();
-            updateDataInfo();
-            
-            showNotification(`Perubahan dibatalkan`, 'success');
-        }
-        
-        async function saveAllChanges() {
-            if (pendingUpdates.size === 0) {
-                showNotification('Tidak ada perubahan untuk disimpan', 'error');
-                return;
-            }
-            
-            showLoading();
-            
-            const updates = Array.from(pendingUpdates.values()).map(update => ({
-                rowNumber: update.data.rowNumber,
-                newStatus: update.newStatus
-            }));
-            
-            let successCount = 0;
-            let errorCount = 0;
-            
-            // Update satu per satu untuk reliability
-            for (const update of updates) {
-                const result = await updateStatusAPI(update.rowNumber, update.newStatus);
-                
-                if (result.success) {
-                    successCount++;
-                    
-                    // Hapus dari pending setelah berhasil
-                    pendingUpdates.delete(update.rowNumber);
-                } else {
-                    errorCount++;
-                    console.error(`Gagal update baris ${update.rowNumber}:`, result.error);
-                }
-            }
-            
-            hideLoading();
-            
-            if (successCount > 0) {
-                showNotification(`Berhasil menyimpan ${successCount} perubahan`, 'success');
-            }
-            
-            if (errorCount > 0) {
-                showNotification(`Gagal menyimpan ${errorCount} perubahan`, 'error');
-            }
-            
-            // Refresh data untuk sinkronisasi
-            if (successCount > 0) {
-                setTimeout(fetchData, 1000);
-            }
-        }
-        
-        // ==================== EVENT LISTENERS ====================
-        elements.loadDataBtn.addEventListener('click', fetchData);
-        elements.saveChangesBtn.addEventListener('click', saveAllChanges);
-        elements.filterStatus.addEventListener('change', applyFilter);
-        elements.closeModal.addEventListener('click', closeUpdateModal);
-        elements.cancelUpdate.addEventListener('click', closeUpdateModal);
-        elements.confirmUpdate.addEventListener('click', updateStatus);
-        
-        // Close modal on outside click
-        window.addEventListener('click', (e) => {
-            if (e.target === elements.updateModal) {
-                closeUpdateModal();
-            }
-        });
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeUpdateModal();
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                fetchData();
-            }
-        });
-        
-        // ==================== GLOBAL FUNCTIONS ====================
-        window.openUpdateModal = openUpdateModal;
-        window.revertUpdate = revertUpdate;
-        
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Test API connection
-            testAPI();
-            
-            // Auto-load data after 1 second
-            setTimeout(fetchData, 1000);
+        // ====== INITIALIZE ======
+        document.addEventListener('DOMContentLoaded', function() {
+            testConnection();
+            // loadData(); // Uncomment untuk auto-load
         });
     </script>
 </body>
