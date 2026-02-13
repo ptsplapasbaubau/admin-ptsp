@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Admin • Masukkan PIN</title>
+    <title>Admin • Panel dengan Iframe</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
             margin: 0;
         }
 
-        /* panel utama – kartu putih dengan bayangan lembut */
+        /* panel utama */
         .card {
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(8px);
@@ -30,13 +30,16 @@
             border-radius: 40px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.6) inset;
             width: 100%;
-            max-width: 420px;
-            padding: 32px 24px;
+            max-width: 1200px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 24px 20px 24px;
             transition: all 0.2s ease;
             border: 1px solid rgba(255,255,255,0.7);
         }
 
-        /* area timer – selalu terlihat */
+        /* timer bar - selalu di atas */
         .timer-bar {
             display: flex;
             align-items: center;
@@ -44,12 +47,13 @@
             background: rgba(10,30,50,0.06);
             padding: 12px 18px;
             border-radius: 100px;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             color: #1e293b;
             font-weight: 500;
             font-size: 0.95rem;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255,255,255,0.5);
+            flex-shrink: 0;
         }
 
         .timer-icon {
@@ -74,7 +78,39 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* judul & instruksi */
+        /* container konten (login atau iframe) */
+        .content-container {
+            flex: 1;
+            min-height: 0; /* penting untuk flex child */
+            width: 100%;
+            border-radius: 32px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* area login - tampil di tengah container */
+        #loginContainer {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            max-width: 420px;
+            width: 100%;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 40px -20px rgba(0,20,40,0.3);
+            border: 1px solid white;
+        }
+
         .welcome {
             text-align: center;
             margin-bottom: 28px;
@@ -94,11 +130,9 @@
             color: #2c3e50;
             margin-top: 6px;
             font-size: 1rem;
-            font-weight: 400;
             opacity: 0.8;
         }
 
-        /* form PIN */
         .pin-form {
             display: flex;
             flex-direction: column;
@@ -112,11 +146,6 @@
             font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .pin-field {
-            position: relative;
-            width: 100%;
         }
 
         .pin-field input {
@@ -134,21 +163,12 @@
             transition: all 0.2s;
             color: #0b2b44;
             caret-color: #2e7eb0;
-            box-shadow: 0 8px 16px -8px rgba(0,40,80,0.2);
         }
 
         .pin-field input:focus {
             border-color: #1f6fb0;
             background: white;
             box-shadow: 0 8px 22px -8px #1f6fb0;
-        }
-
-        .pin-field input::placeholder {
-            letter-spacing: normal;
-            font-size: 1rem;
-            color: #a0b8cc;
-            font-weight: 300;
-            opacity: 0.7;
         }
 
         .login-btn {
@@ -159,13 +179,11 @@
             color: white;
             font-size: 1.3rem;
             font-weight: 600;
-            letter-spacing: 1px;
             margin-top: 12px;
             box-shadow: 0 12px 24px -10px #0d2f4b;
             transition: all 0.15s;
             cursor: pointer;
             border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(2px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -175,10 +193,8 @@
         .login-btn:active {
             transform: scale(0.98);
             background: #15344f;
-            box-shadow: 0 4px 12px -6px #0b1f2f;
         }
 
-        /* status/error area */
         .message {
             text-align: center;
             min-height: 38px;
@@ -186,60 +202,59 @@
             padding: 6px 12px;
             border-radius: 40px;
             font-size: 0.95rem;
-            transition: all 0.2s;
+            margin-top: 16px;
         }
 
         .error {
             color: #b81c1c;
             background: rgba(255,220,220,0.7);
-            backdrop-filter: blur(4px);
         }
 
-        .success {
-            color: #136b4c;
-            background: rgba(200,250,220,0.7);
-        }
-
-        /* konten admin (protected) – tampil setelah login */
-        .admin-panel {
-            display: none;
-            margin-top: 16px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .admin-card {
-            background: rgba(255,255,255,0.5);
-            backdrop-filter: blur(4px);
+        /* area iframe - full container */
+        #iframeContainer {
+            height: 100%;
+            width: 100%;
+            display: none; /* awalnya hidden */
+            flex-direction: column;
+            background: white;
             border-radius: 32px;
-            padding: 28px 16px;
-            text-align: center;
-            border: 1px solid white;
-            box-shadow: 0 10px 20px -10px rgba(0,20,40,0.2);
+            overflow: hidden;
         }
 
-        .admin-card h3 {
-            font-size: 1.8rem;
-            color: #0f3f5e;
-            margin-bottom: 8px;
+        .iframe-wrapper {
+            flex: 1;
+            width: 100%;
+            background: white;
+            position: relative;
         }
 
-        .admin-card p {
-            color: #1e415b;
-            margin-bottom: 24px;
-            font-size: 1rem;
+        #targetIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* tombol logout kecil di dalam iframe container (opsional) */
+        .iframe-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
 
         .logout-btn {
             background: rgba(220, 80, 80, 0.9);
             border: none;
-            padding: 14px 30px;
+            padding: 10px 24px;
             border-radius: 40px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: white;
-            backdrop-filter: blur(4px);
             cursor: pointer;
-            box-shadow: 0 8px 18px -8px #aa3c3c;
+            box-shadow: 0 4px 12px -6px #aa3c3c;
             transition: 0.1s;
             border: 1px solid rgba(255,255,255,0.4);
         }
@@ -249,23 +264,21 @@
             background: #b14242;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* responsif */
+        @media (max-width: 600px) {
+            .card {
+                padding: 16px 12px 12px 12px;
+                height: 95vh;
+            }
+            .login-box {
+                padding: 24px 16px;
+            }
+            .pin-field input {
+                font-size: 1.5rem;
+                letter-spacing: 8px;
+            }
         }
 
-        /* responsif ekstra kecil */
-        @media (max-width: 380px) {
-            .card { padding: 24px 16px; }
-            .pin-field input { font-size: 1.5rem; letter-spacing: 8px; }
-            .welcome h2 { font-size: 1.6rem; }
-        }
-
-        /* tombol sentuh nyaman */
-        .login-btn, .logout-btn, input {
-            touch-action: manipulation;
-        }
-        /* sembunyikan spin button di input number */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -278,7 +291,7 @@
 </head>
 <body>
     <div class="card" id="mainCard">
-        <!-- timer display (selalu tampak) -->
+        <!-- timer display (selalu tampak di atas) -->
         <div class="timer-bar">
             <div class="timer-icon">
                 <span>⏳</span> Sesi aktif
@@ -286,133 +299,141 @@
             <div id="timerDisplay">10:00</div>
         </div>
 
-        <!-- area login (ditampilkan jika belum login) -->
-        <div id="loginContainer">
-            <div class="welcome">
-                <h2>🔐 Admin</h2>
-                <p>masukkan PIN 6 digit</p>
-            </div>
+        <!-- container yang berubah (login / iframe) -->
+        <div class="content-container">
+            <!-- Area Login -->
+            <div id="loginContainer">
+                <div class="login-box">
+                    <div class="welcome">
+                        <h2>🔐 Admin</h2>
+                        <p>masukkan PIN 6 digit</p>
+                    </div>
 
-            <div class="pin-form">
-                <label class="pin-label" for="pinInput">PIN</label>
-                <div class="pin-field">
-                    <input type="number" id="pinInput" placeholder="••••••" inputmode="numeric" pattern="[0-9]*" maxlength="6" autofocus>
+                    <div class="pin-form">
+                        <label class="pin-label" for="pinInput">PIN</label>
+                        <div class="pin-field">
+                            <input type="number" id="pinInput" placeholder="••••••" inputmode="numeric" pattern="[0-9]*" maxlength="6" autofocus>
+                        </div>
+                        <button class="login-btn" id="loginBtn">
+                            <span>➡️</span> MASUK
+                        </button>
+                    </div>
+
+                    <div id="messageArea" class="message"></div>
                 </div>
-                <button class="login-btn" id="loginBtn">
-                    <span>➡️</span> MASUK
-                </button>
             </div>
 
-            <div id="messageArea" class="message"></div>
-        </div>
-
-        <!-- area admin (protected, muncul setelah login sukses) -->
-        <div id="adminContainer" class="admin-panel">
-            <div class="admin-card">
-                <h3>📋 DASHBOARD</h3>
-                <p>Selamat datang, Admin</p>
-                <button class="logout-btn" id="logoutBtn">🚪 KELUAR</button>
+            <!-- Area Iframe (URL Google Apps Script) -->
+            <div id="iframeContainer">
+                <div class="iframe-wrapper">
+                    <iframe id="targetIframe" title="Google Apps Script" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation"></iframe>
+                </div>
+                <div class="iframe-footer">
+                    <button class="logout-btn" id="logoutBtn">🚪 LOGOUT</button>
+                </div>
             </div>
-            <!-- kamu bisa tambah konten admin lainnya di sini -->
         </div>
     </div>
 
     <script>
         (function() {
             // Konfigurasi
-            const VALID_PIN = "123456";          // ganti sesuai keinginan (min. 6 digit)
-            const TIMEOUT_MINUTES = 10;           // 10 menit
+            const VALID_PIN = "123456";  // PIN default 6 digit
+            const TIMEOUT_MINUTES = 10;
             const TIMEOUT_MILLIS = TIMEOUT_MINUTES * 60 * 1000;
+            const TARGET_URL = "https://script.google.com/macros/s/AKfycbwUcKv1T4QytZzNfNLiWw2335XtSXjpjxWOStjXWT5GxLj4P4UHHjgKF-rfVCeuk3SawQ/exec";
 
             // State
             let lastActivity = Date.now();
             let timerInterval = null;
             let logoutTimeout = null;
-            let isLoggedIn = false;                // false = tampil login, true = tampil admin
+            let isLoggedIn = false;
 
             // Elemen DOM
             const loginContainer = document.getElementById('loginContainer');
-            const adminContainer = document.getElementById('adminContainer');
+            const iframeContainer = document.getElementById('iframeContainer');
             const pinInput = document.getElementById('pinInput');
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const messageDiv = document.getElementById('messageArea');
             const timerDisplay = document.getElementById('timerDisplay');
+            const targetIframe = document.getElementById('targetIframe');
 
-            // === Helper: reset timer idle (panggil setiap ada aktivitas) ===
+            // === Reset timer idle (hanya jika login) ===
             function resetIdleTimer() {
-                if (!isLoggedIn) return; // timer hanya berjalan saat login
+                if (!isLoggedIn) return;
                 lastActivity = Date.now();
-                // Hapus timeout yang lama & buat baru
                 if (logoutTimeout) clearTimeout(logoutTimeout);
                 logoutTimeout = setTimeout(() => {
-                    // Jika waktu habis, logout paksa
                     if (isLoggedIn) {
                         logout('Waktu habis, logout otomatis.');
                     }
                 }, TIMEOUT_MILLIS);
             }
 
-            // === Update tampilan timer countdown setiap detik ===
+            // === Update tampilan timer countdown ===
             function startCountdownUpdater() {
                 if (timerInterval) clearInterval(timerInterval);
                 timerInterval = setInterval(() => {
                     if (!isLoggedIn) {
-                        // Jika tidak login, tampilkan "10:00" sebagai default / lock
                         timerDisplay.textContent = '10:00';
                         return;
                     }
 
                     const now = Date.now();
-                    const elapsed = now - lastActivity;              // ms sejak aktivitas terakhir
+                    const elapsed = now - lastActivity;
                     const remaining = Math.max(0, TIMEOUT_MILLIS - elapsed);
                     const totalSeconds = Math.floor(remaining / 1000);
                     const mins = Math.floor(totalSeconds / 60);
                     const secs = totalSeconds % 60;
 
-                    // format mm:ss (selalu 2 digit)
                     timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-                    // jika waktu habis, logout (seharusnya sudah ditangani timeout, tapi jaga2)
                     if (remaining <= 0 && isLoggedIn) {
                         logout('Sesi berakhir.');
                     }
-                }, 500); // per 0.5 detik agar lebih responsif
+                }, 500);
             }
 
-            // === Aktivitas pengguna: gerakan mouse, sentuhan, ketikan ===
+            // === Handler aktivitas pengguna ===
             function activityHandler() {
                 if (isLoggedIn) {
                     resetIdleTimer();
                 }
             }
 
-            // === Login (validasi PIN) ===
+            // === Login: validasi PIN dan tampilkan iframe ===
             function attemptLogin() {
                 const enteredPin = pinInput.value.trim();
                 if (enteredPin === VALID_PIN) {
-                    // sukses
+                    // Login sukses
                     isLoggedIn = true;
-                    lastActivity = Date.now();      // set aktivitas awal
-                    // sembunyikan login, tampilkan admin
+                    lastActivity = Date.now();
+
+                    // Sembunyikan login, tampilkan iframe container
                     loginContainer.style.display = 'none';
-                    adminContainer.style.display = 'block';
-                    messageDiv.textContent = '';     // hapus pesan error
+                    iframeContainer.style.display = 'flex'; // flex karena di CSS flex-direction column
+                    
+                    // Set src iframe ke target URL
+                    targetIframe.src = TARGET_URL;
+
+                    // Bersihkan pesan error
+                    messageDiv.textContent = '';
                     messageDiv.className = 'message';
 
-                    // atur timer logout
+                    // Atur timer logout
                     if (logoutTimeout) clearTimeout(logoutTimeout);
                     logoutTimeout = setTimeout(() => {
                         logout('Waktu habis, logout otomatis.');
                     }, TIMEOUT_MILLIS);
 
-                    // mulai update tampilan timer
+                    // Update timer display
                     startCountdownUpdater();
 
-                    // fokus tidak penting lagi, tapi bersihkan input
+                    // Kosongkan input PIN
                     pinInput.value = '';
                 } else {
-                    // error
+                    // PIN salah
                     messageDiv.textContent = '✘ PIN salah, coba lagi.';
                     messageDiv.className = 'message error';
                     pinInput.value = '';
@@ -420,44 +441,48 @@
                 }
             }
 
-            // === Logout (dapat dipanggil dari mana saja) ===
+            // === Logout: kembali ke tampilan login ===
             function logout(reason = '') {
                 if (!isLoggedIn) return;
 
                 isLoggedIn = false;
 
-                // bersihkan timeout & interval
+                // Hentikan timer dan timeout
                 if (logoutTimeout) clearTimeout(logoutTimeout);
                 if (timerInterval) clearInterval(timerInterval);
                 timerInterval = null;
 
-                // ubah tampilan
-                loginContainer.style.display = 'block';
-                adminContainer.style.display = 'none';
-                timerDisplay.textContent = '10:00';   // reset timer ke 10 menit
+                // Sembunyikan iframe, tampilkan login
+                iframeContainer.style.display = 'none';
+                loginContainer.style.display = 'flex'; // flex agar konten di tengah
+                
+                // Reset iframe src (agar tidak terus loading)
+                targetIframe.src = 'about:blank';
 
-                // tampilkan alasan logout di message jika ada
+                // Reset timer display
+                timerDisplay.textContent = '10:00';
+
+                // Tampilkan pesan jika ada
                 if (reason) {
                     messageDiv.textContent = reason;
                     messageDiv.className = 'message';
-                    // bisa ditambah style info, biarkan netral
                 } else {
                     messageDiv.textContent = '';
                 }
 
-                // fokus ke input PIN
+                // Fokus ke input PIN
                 pinInput.focus();
             }
 
-            // === Inisialisasi event listener ===
+            // === Inisialisasi event listeners ===
             function init() {
-                // event login
+                // Event login
                 loginBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     attemptLogin();
                 });
 
-                // input PIN bisa submit dengan tekan Enter
+                // Enter pada input PIN
                 pinInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
@@ -465,47 +490,38 @@
                     }
                 });
 
-                // logout manual
+                // Logout manual
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     logout('Anda telah logout.');
                 });
 
-                // Aktivitas: gerakan mouse, sentuh, ketik (hanya jika login)
+                // Aktivitas pengguna (reset timer)
                 document.addEventListener('mousemove', activityHandler);
                 document.addEventListener('touchstart', activityHandler);
                 document.addEventListener('keydown', activityHandler);
                 document.addEventListener('click', activityHandler);
                 document.addEventListener('scroll', activityHandler);
 
-                // juga reset ketika input di isi (walau belum login, tak apa)
-                pinInput.addEventListener('input', activityHandler); // tidak berefek saat logout, tapi aman
-
-                // Pastikan timer berjalan (walau default countdown 10:00)
-                startCountdownUpdater();
-
-                // kondisi awal: belum login (tampil form PIN)
-                loginContainer.style.display = 'block';
-                adminContainer.style.display = 'none';
-                pinInput.focus();
-
-                // validasi input maksimal 6 digit (untuk UX)
+                // Batasi input maksimal 6 digit
                 pinInput.addEventListener('input', function(e) {
                     if (this.value.length > 6) {
                         this.value = this.value.slice(0, 6);
                     }
-                    // hanya angka yang diperbolehkan oleh type=number, jadi aman
                 });
+
+                // Pastikan container login tampil, iframe tersembunyi
+                loginContainer.style.display = 'flex';
+                iframeContainer.style.display = 'none';
+                pinInput.focus();
+
+                // Mulai updater timer (meski belum login, menampilkan 10:00)
+                startCountdownUpdater();
             }
 
             // Mulai
             init();
-
-            // optional: jika ingin sesi tetap login saat refresh? 
-            // tidak disimpan agar aman (sesuai permintaan timer logout)
-            // bisa ditambahkan sessionStorage, tapi lebih baik tidak karena ini admin sederhana
         })();
     </script>
-    <!-- Catatan: embed dalam frame url https://script.google.com/macros/s/AKfycbwUcKv1T4QytZzNfNLiWw2335XtSXjpjxWOStjXWT5GxLj4P4UHHjgKF-rfVCeuk3SawQ/exec -->
 </body>
 </html>
